@@ -1,64 +1,32 @@
-# Tên Dự Án
+Ngôn ngữ : [us English](README.en.md) | [🇻🇳 Tiếng Việt](README.md)
+# 🎬 Website đặt vé máy bay - TravFruit
 
-Một dòng mô tả ngắn gọn về dự án của bạn.
+Website mô tả quá trình đặt vé máy bay giao diện đơn giản, dễ thao tác, tích hợp thanh toán trực tuyến.
 
-## Giới thiệu
+## 🔑 Các tính năng chính
 
-Đây là phần giới thiệu chi tiết hơn về dự án. Ví dụ:
+- Đăng nhập, đăng kí.
+- Chuyến theo ngày.
+- Chọn chỗ ngồi cho chuyến bay đi và khứ hồi.
+- Thanh toán MoMo, VietQR.
 
-- Dự án này làm gì?
-- Mục tiêu của nó là gì?
-- Ai nên sử dụng?
+## 🛠️ Công nghệ được sử dụng
 
-## Tính năng
+- ReactJS (Client), Vite (Admin)
+- Node.js + Express
+- MongoDB
+- JWT Authentication
+- Postman
 
-- **Tính năng 1**: Mô tả ngắn.
-- **Tính năng 2**: Mô tả ngắn.
-- **Tính năng 3**: Có thể thêm chi tiết hoặc ví dụ.
+## 🔗 Liên kết
 
-## Cài đặt
+- [Client](https://travfruitv4.vercel.app/)
+- [Admin](https://travfruitv3admin.vercel.app/)
 
-Hướng dẫn từng bước để cài đặt dự án:
+## 📧 Liên hệ
 
-1. Clone repository: `git clone https://github.com/username/repository.git`
-2. Cài đặt dependencies: `npm install` (hoặc lệnh tương ứng).
-3. Chạy dự án: `npm start`.
+- travfruit@gmail.com
 
-## Cách sử dụng
+## Dự án khác
 
-Mô tả cách sử dụng dự án:
-
-- Lựa chọn 1: `command --option1`
-- Lựa chọn 2: `command --option2`
-- Xem thêm tại [Wiki](https://github.com/username/repository/wiki).
-
-## Liên kết
-
-- [Trang chính thức](https://example.com)
-- [Demo](https://example.com/demo)
-- [Tài liệu](https://example.com/docs)
-
-## Hiệu ứng (Badges)
-
-Thêm các badge để hiển thị trạng thái dự án:
-![GitHub license](https://img.shields.io/github/license/username/repository)
-![GitHub stars](https://img.shields.io/github/stars/username/repository?style=social)
-
-## Đóng góp
-
-Hướng dẫn cách đóng góp:
-
-1. Fork repository.
-2. Tạo branch mới: `git checkout -b feature/ten-branch`.
-3. Commit thay đổi: `git commit -m "Mô tả thay đổi"`.
-4. Push lên branch: `git push origin feature/ten-branch`.
-5. Tạo Pull Request.
-
-## Liên hệ
-
-- Email: your.email@example.com
-- Twitter: [@yourusername](https://twitter.com/yourusername)
-
-## Giấy phép
-
-Dự án này được cấp phép dưới [MIT License](https://opensource.org/licenses/MIT).
+- 🌐 [Ứng dụng đặt vé xem phim](https://github.com/thanhlongtruong/cinefruit)
