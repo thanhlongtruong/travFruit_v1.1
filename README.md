@@ -21,7 +21,7 @@ Website mô tả quá trình đặt vé máy bay giao diện đơn giản, dễ 
 ## 🔗 Liên kết
 
 - [Client](https://travfruitv4.vercel.app/)
-- [Admin](https://travfruitv3admin.vercel.app/)
+- [Admin](https://travfruitv3admin.vercel.app/) (tk: 0000000000, password: travFruit)
 
 ## 📧 Liên hệ
 
