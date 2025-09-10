@@ -272,7 +272,7 @@ router.get(
   "/create/three-months/send-verify",
   authorization,
   checkAdmin,
-  apiLimiter,
+  apiLimiter({ max: 3 }),
   async (req, res) => {
     const currentUrl = "https://travfruitv3admin.vercel.app";
     // const currentUrl = "http://localhost:5173";
@@ -346,7 +346,7 @@ router.get(
   "/create/three-months",
   authorization,
   checkAdmin,
-  apiLimiter,
+  apiLimiter({ max: 3 }),
   async (req, res) => {
     //Server-Sent Events (SSE)
     // //res.setHeader("Content-Type", "text/event-stream");
