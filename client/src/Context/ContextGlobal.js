@@ -1,20 +1,16 @@
 import {
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { authorizedAxiosInstance } from "../Components/Utils/authAxios";
+import axios from "../Components/Utils/authAxios.js";
 import notify from "../Components/Noti/notify";
-import { SocketContext } from "./SocketContext";
 
 export const CONTEXT = createContext({});
 export const OrderProvider = ({ children }) => {
-  const { socket, changeStateConnectSocket } = useContext(SocketContext);
-
   const naviReload = useNavigate();
 
   //<<<<<<<<<<<<<<<<<<<<< Page Home
@@ -303,96 +299,9 @@ export const OrderProvider = ({ children }) => {
   const tomorrow = new Date();
 
   const [Departure_Return_Date, setDeparture_Return_Date] = useState([
-    tomorrow.setDate(tomorrow.getDate() + 1),
-    tomorrow.setDate(tomorrow.getDate() + 1),
+    new Date(tomorrow.setDate(tomorrow.getDate() + 1)),
+    new Date(tomorrow.setDate(tomorrow.getDate() + 2)),
   ]);
-  const handlePickDeparture_Return_Date = (date, index) => {
-    const date_ = date ?? new Date();
-
-    setDeparture_Return_Date((pre) => {
-      const preDeparture_Return_Date = [...pre];
-      if (index === 0 && date_ > preDeparture_Return_Date[1]) {
-        preDeparture_Return_Date[1] = date_;
-        preDeparture_Return_Date[0] = date_;
-      } else {
-        preDeparture_Return_Date[index] = date_;
-      }
-      return preDeparture_Return_Date;
-    });
-  };
-
-  const handleCheckAllInformationBeforeSearch = ({
-    departure,
-    arrival,
-    dateDeparture,
-    dateReturn,
-  }) => {
-    const check_departure = AirportsVN.some((items) =>
-      departure.trim().includes(`${items.city} (${items.IATA})`)
-    );
-
-    const check_arrival = AirportsVN.some((items) =>
-      arrival.trim().includes(`${items.city} (${items.IATA})`)
-    );
-
-    const IATA_departure = departure.match(/\(([^)]+)\)/);
-    const IATA_arrival = arrival.match(/\(([^)]+)\)/);
-
-    const Date_departure = convertDateToVNDate(dateDeparture).split(" ")[1];
-    const Date_return = convertDateToVNDate(dateReturn).split(" ")[1];
-    const [dayDeparture, monthDeparture, yearDeparture] =
-      Date_departure.split("/");
-    const [dayReturn, monthReturn, yearReturn] = Date_return.split("/");
-
-    const formatDate_departure = `${yearDeparture}${monthDeparture}${dayDeparture}`;
-    const formatDate_return = `${yearReturn}${monthReturn}${dayReturn}`;
-
-    return {
-      IATA_departure,
-      IATA_arrival,
-      formatDate_departure,
-      formatDate_return,
-      check_departure,
-      check_arrival,
-    };
-  };
-
-  const handleSearchRealFlight = async ({
-    departure,
-    arrival,
-    dateDeparture,
-    dateReturn,
-    quantityPassenger,
-  }) => {
-    const resultCheck = handleCheckAllInformationBeforeSearch({
-      departure,
-      arrival,
-      dateDeparture,
-      dateReturn,
-    });
-    if (!resultCheck.check_departure || !resultCheck.check_arrival) {
-      handleInvalid_AirportFrom_AirportTo(1, true);
-      return;
-    }
-    if (invalid_AirportFrom_AirportTo[0].status) {
-      return;
-    }
-    const params = new URLSearchParams({
-      departure: departure,
-      arrival: arrival,
-      departureIATA: resultCheck.IATA_departure[1],
-      arrivalIATA: resultCheck.IATA_arrival[1],
-      departureDate: resultCheck.formatDate_departure,
-      oneWayTicket: bayMotChieu,
-      ...(bayMotChieu
-        ? {}
-        : {
-            returnDate: resultCheck.formatDate_return,
-          }),
-      passengers: quantityPassenger,
-    });
-    naviReload(`/XemDanhSachChuyenBay?${params.toString()}`);
-  };
 
   const handleInvalid_AirportFrom_AirportTo = (index, status) => {
     setInvalid_AirportFrom_AirportTo((pre) => {
@@ -417,43 +326,31 @@ export const OrderProvider = ({ children }) => {
   }, [AirportFrom, AirportTo]);
 
   const handleReplacePriceAirport = (price) => {
-    const removeUnit = price.replace(" VND", "").replace(/,/g, "");
+    const removeUnit = price.replace(" VND", "").replace(/\./g, "");
     return parseInt(removeUnit, 10);
   };
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  //open dialog chỉnh số lượng và hạng
-  const [isChonMuaClick, setChonMuaClick] = useState(false);
-  const handleChonMuaClick = () => {
-    setChonMuaClick(!isChonMuaClick);
-  };
-
-  //TODO func handle logout
+  // func handle logout
   const handleSetStateLogin_Logout = async () => {
     // setShowOptionSetting_LoginSuccess(!isShowOptionSetting_LoginSuccess);
 
-    await authorizedAxiosInstance.delete(
-      `https://travrel-server.vercel.app/user/logout`
-    );
+    await axios.delete(`/user/logout`);
     localStorage.removeItem("user");
-    if (socket) {
-      changeStateConnectSocket(false);
-      socket.disconnect();
-    }
+    localStorage.removeItem("payment");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    setShowChatbot(false);
     naviReload("/");
     // Trường hợp 2: Dùng Http Only cookie > gọi api xử lý remove cookie
   };
 
   const funcRefreshToken = async () => {
-    return await authorizedAxiosInstance.put(
-      `https://travrel-server.vercel.app/user/refresh-token`
-    );
+    return await axios.put(`/user/refresh-token`);
   };
 
   const funcPayloadToken = async () => {
-    const res = await authorizedAxiosInstance.get(
-      `https://travrel-server.vercel.app/user/get`
-    );
+    const res = await axios.get(`/user/get`);
     localStorage.setItem("user", JSON.stringify(res.data));
     return;
   };
@@ -475,10 +372,6 @@ export const OrderProvider = ({ children }) => {
     setShowOptionSetting_LoginSuccess(!isShowOptionSetting_LoginSuccess);
   };
 
-  const [isStateSaveRegister, setStateRegister] = useState(false);
-
-  const [isSubmitUpdate, setSubmitUpdate] = useState(false);
-
   //? set state open Window choose hạng vé
   const [openAdjustQuantity, setOpenAdjustQuantity] = useState(false);
   const [hideDetailItemFlight, setHideDetailItemFlight] = useState(true);
@@ -493,22 +386,17 @@ export const OrderProvider = ({ children }) => {
     airportReturn,
     quantityTicketsDeparture,
     quantityTicketsReturn,
+    oneWayFlight,
   }) => {
-    if (!existUser) {
-      setShowInterfaceLogin(true);
-      return;
-    }
-
     try {
       naviReload("/XemDanhSachChuyenbBay/DatChoCuaToi", {
         state: {
           user: existUser,
-          oneWayFlight: bayMotChieu,
+          oneWayFlight: oneWayFlight,
           quantityTicketsDeparture: quantityTicketsDeparture,
           quantityTicketsReturn: quantityTicketsReturn,
           airportDeparture: airportDeparture,
           airportReturn: airportReturn,
-          ngayBay: Departure_Return_Date,
         },
       });
       setOpenAdjustQuantity(false);
@@ -560,17 +448,58 @@ export const OrderProvider = ({ children }) => {
     return new Date(year, month - 1, day);
   }, []);
 
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<NotificationSocket
+  //-----------------------flie FlightShowCalendar.js
+  const [stateFlightShowCalendar, setStateFlightShowCalendar] = useState(false);
+
+  // loading
+  const [isLoading, setLoading] = useState(false);
+
+  // state hien chat bot
+  const [isShowChatbot, setShowChatbot] = useState(false);
+
+  const [notification, setNotification] = useState(null);
+
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+  }
+  
+  // ham chuyen VND sang USD
+  const convertVNDtoUSD = (num) => {
+    let cleanVND = num.replace(" VND", "").replace(/\./g, "");
+    return (Number(cleanVND) / 23000).toFixed(2);
+  }
+
+  // expired time payment
+  const [isExpired, setIsExpired] = useState(false);
+ 
+  // state QR_VietQR
+  const [QR_VietQR, setQR_VietQR] = useState(null);
+  // time expired QR_VietQR
+  const [timeExpired_VietQR, setTimeExpired_VietQR] = useState(null);
+  // orderId truyen tu /Setting/HistoryTicket den Setting
+  const [orderId_VietQR, setOrderId_VietQR] = useState(null);
 
   return (
     <CONTEXT.Provider
       value={{
+        orderId_VietQR, setOrderId_VietQR,
+        timeExpired_VietQR, setTimeExpired_VietQR,
+        QR_VietQR, setQR_VietQR,
+        isExpired, setIsExpired,
+        convertVNDtoUSD,
+        setNotification,
+        notification,
+        showNotification,
+        existUser,
+        isShowChatbot,
+        setShowChatbot,
+        isLoading,
+        setLoading,
+        stateFlightShowCalendar,
+        setStateFlightShowCalendar,
         handleReplacePriceAirport,
         convertStringToOjectDate,
         handleInvalid_AirportFrom_AirportTo,
-        handleCheckAllInformationBeforeSearch,
-        handleSearchRealFlight,
-        handlePickDeparture_Return_Date,
         Departure_Return_Date,
         setDeparture_Return_Date,
         bayMotChieu,
@@ -605,16 +534,10 @@ export const OrderProvider = ({ children }) => {
         setHideDetailItemFlight,
         openAdjustQuantity,
         setOpenAdjustQuantity,
-        isSubmitUpdate,
-        setSubmitUpdate,
         setShowOptionSetting_LoginSuccess,
-        isStateSaveRegister,
-        setStateRegister,
         handleSetStateLogin_Logout,
         handleShowOptionSetting_LoginSuccess,
         isShowOptionSetting_LoginSuccess,
-        isChonMuaClick,
-        handleChonMuaClick,
       }}
     >
       {children}
