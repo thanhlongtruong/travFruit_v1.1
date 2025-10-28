@@ -9,6 +9,7 @@ const RouterAccount = require("./routers/Account.js");
 const RouterFlight = require("./routers/RouterFlight.js");
 const RouterBotHandleFlight = require("./routers/RouterBotHandleFlight.js");
 const RouterDH = require("./routers/RouterOrder.js");
+const RouterStatistics = require("./routers/Statistics.js");
 const RouterMoMo = require("./routers/PayMomo.js");
 const RouterPaypal = require("./routers/Paypal.js");
 const RouterVietQR = require("./routers/VietQR.js");
@@ -74,6 +75,7 @@ app.use("/flights", RouterFlight);
 app.use("/bot/flights", RouterBotHandleFlight);
 app.use("/user", RouterAccount);
 app.use("/order", authorization, RouterDH);
+app.use("/statistics", RouterStatistics);
 
 app.use((req, res, next) => {
   res.status(404).json({

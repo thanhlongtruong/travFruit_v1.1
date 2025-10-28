@@ -274,6 +274,7 @@ router.get(
   checkAdmin,
   apiLimiter({ max: 3 }),
   async (req, res) => {
+
     const currentUrl = "https://travfruitv3admin.vercel.app";
     // const currentUrl = "http://localhost:5173";
     const uniqueString = uuidv4();
