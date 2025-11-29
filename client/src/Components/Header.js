@@ -45,7 +45,7 @@ function Header() {
       <Link to="/" className="logo-header">
         <img
           alt="logo travfruit"
-          src="/logo-header-word.svg"
+          src="/29e9519a-e1ad-458a-ae09-dd36d8facaea.jpg"
           className="h-[70px] w-[200px]"
         />
 
