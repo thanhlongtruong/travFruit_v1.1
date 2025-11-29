@@ -49,7 +49,7 @@ function Header() {
           className="h-[70px] w-[200px]"
         />
 
-        <span className="uppercase">travfruit</span>
+        <span className="uppercase">traveloka</span>
       </Link>
 
       <ul className="text-base font-semibold uppercase transition-all div-flex-adjust-justify-between w-fit gap-x-3 md:gap-x-10 duration-0 text-[#444444]">
